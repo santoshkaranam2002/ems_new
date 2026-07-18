@@ -1,0 +1,76 @@
+<nav class="sidenav" [class.mobile-open]="mobileOpen">
+  <!-- Logo -->
+  <div class="sidenav__logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" width="17" height="17" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+    <div class="logo-txt">
+      <span class="logo-text">HNPCL <b>EMS</b></span>
+      <span class="logo-sub">Employee Management</span>
+    </div>
+  </div>
+
+  <!-- Nav Sections -->
+  <div class="sidenav__body">
+    <ng-container *ngFor="let section of navSections">
+      <div class="nav-section">
+        <p class="nav-section__title">{{ section.title }}</p>
+
+        <ng-container *ngFor="let item of section.items">
+          <!-- Item with children -->
+          <ng-container *ngIf="item.children; else leafItem">
+            <button class="nav-item nav-item--parent"
+              [class.expanded]="isExpanded(item.label)"
+              (click)="toggleMenu(item.label)">
+              <span class="nav-item__icon">
+                <app-nav-icon [name]="item.icon || ''"></app-nav-icon>
+              </span>
+              <span class="nav-item__label">{{ item.label }}</span>
+              <span class="nav-item__count">{{ item.children.length }}</span>
+              <svg class="nav-item__arrow" viewBox="0 0 16 16" fill="none">
+                <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="nav-children" [class.open]="isExpanded(item.label)">
+              <a *ngFor="let child of item.children"
+                [routerLink]="child.route"
+                routerLinkActive="active"
+                class="nav-child"
+                (click)="onLinkClick()">
+                <span class="nav-child__dot"></span>
+                {{ child.label }}
+              </a>
+            </div>
+          </ng-container>
+
+          <!-- Leaf item -->
+          <ng-template #leafItem>
+            <a [routerLink]="item.route"
+              routerLinkActive="active"
+              class="nav-item"
+              (click)="onLinkClick()">
+              <span class="nav-item__icon">
+                <app-nav-icon [name]="item.icon || ''"></app-nav-icon>
+              </span>
+              <span class="nav-item__label">{{ item.label }}</span>
+              <span *ngIf="item.badge" class="badge">{{ item.badge }}</span>
+            </a>
+          </ng-template>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- User -->
+  <div class="sidenav__user">
+    <div class="user-avatar">AD</div>
+    <div class="user-info">
+      <span class="user-name">Administrator</span>
+      <span class="user-role">HNPCL &middot; Full access</span>
+    </div>
+    <span class="user-dot"></span>
+  </div>
+</nav>

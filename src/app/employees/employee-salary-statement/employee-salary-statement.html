@@ -1,0 +1,160 @@
+<div class="fade-up">
+  <div class="page-head">
+    <div class="ph-titles">
+      <span class="ph-eyebrow">Employees</span>
+      <h2 class="ph-title">Employee Salary Statement</h2>
+      <p class="ph-desc">Monthly wage statement per employee</p>
+    </div>
+    <div class="ph-actions">
+      <button class="btn btn-outline" (click)="doPrint()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print
+      </button>
+      <button class="btn btn-outline" (click)="doExport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="search-field" style="flex:1; min-width:220px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search by employee code, name or pass number..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+      </div>
+      <div class="select-wrap" style="min-width:200px;">
+        <select class="select" [(ngModel)]="selContractor" (ngModelChange)="onSearch()">
+          <option *ngFor="let c of contractors" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+      <span class="pill pill-gold">{{ filtered.length }} records</span>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th *ngFor="let c of columns">{{ c.label }}</th>
+            <th style="width:120px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of paged">
+            <td *ngFor="let c of columns; let ci = index">
+              <ng-container *ngIf="c.key === 'status'; else normalCell">
+                <span class="pill" [ngClass]="pill(r[c.key])">{{ r[c.key] }}</span>
+              </ng-container>
+              <ng-template #normalCell>
+                <span [class.cell-main]="ci === 0">{{ r[c.key] }}</span>
+              </ng-template>
+            </td>
+            <td>
+              <button class="row-btn" title="View full details" (click)="openView(r)" style="margin-right:6px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+              <button class="btn btn-primary act-btn" (click)="openAction(r)" [disabled]="isDisabled(r)">Mark Paid</button>
+            </td>
+          </tr>
+          <tr *ngIf="paged.length === 0">
+            <td [attr.colspan]="columns.length + 1" style="text-align:center; padding: 28px; color: var(--text-muted);">No employees match your search.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-foot">
+      <span>Showing {{ paged.length }} of {{ filtered.length }} records</span>
+      <div class="pager">
+        <button class="pg-btn" (click)="setPage(page - 1)" [disabled]="page <= 1">Prev</button>
+        <button class="pg-btn" *ngFor="let pg of pages" [class.on]="pg === page" (click)="setPage(pg)">{{ pg }}</button>
+        <button class="pg-btn" (click)="setPage(page + 1)" [disabled]="page >= totalPages">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ACTION POPUP ── -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <div class="mh-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M6 3h12M6 8h12M6 13l8.5 8M6 13h3a6 6 0 006-6"/></svg>
+        </div>
+        <div>
+          <div class="mh-title">Mark Salary as Paid</div>
+          <div class="mh-sub" *ngIf="target">{{ target['name'] }} &middot; {{ target['code'] }}</div>
+        </div>
+        <button class="mh-close" (click)="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field span-2" *ngFor="let f of popupFields">
+            <label>{{ f.label }}</label>
+            <ng-container *ngIf="f.type === 'select'; else textInput">
+              <div class="select-wrap">
+                <select class="select" [(ngModel)]="form[f.key]">
+                  <option *ngFor="let o of f.options" [value]="o">{{ o }}</option>
+                </select>
+              </div>
+            </ng-container>
+            <ng-template #textInput>
+              <input class="input" [type]="f.type" [(ngModel)]="form[f.key]" [placeholder]="f.label" />
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="confirmAction()">Mark Paid</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ROW DETAILS POPUP ── -->
+  <div class="modal-overlay" *ngIf="viewRow" (click)="closeView()">
+    <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <div class="mh-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div>
+          <div class="mh-title">Full Details</div>
+          <div class="mh-sub">Complete record information</div>
+        </div>
+        <button class="mh-close" (click)="closeView()">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div class="view-grid">
+          <div class="view-item" *ngFor="let p of viewPairs">
+            <div class="vi-label">{{ p[0] }}</div>
+            <div class="vi-value">{{ p[1] }}</div>
+          </div>
+        </div>
+        <div *ngIf="viewLoading" class="view-loading">Loading complete employee record&hellip;</div>
+        <ng-container *ngIf="viewEmp">
+          <div class="view-sec" *ngIf="empPairs.length">Employee Record</div>
+          <div class="view-grid">
+            <div class="view-item" *ngFor="let p of empPairs">
+              <div class="vi-label">{{ p[0] }}</div>
+              <div class="vi-value">{{ p[1] }}</div>
+            </div>
+          </div>
+          <div class="view-sec" *ngIf="addrList.length">Addresses</div>
+          <div class="view-item view-item-full" *ngFor="let a of addrList">
+            <div class="vi-label">{{ a.addressType }}</div>
+            <div class="vi-value">{{ a.addressLine || '\u2014' }}<span *ngIf="a.district">, {{ a.district }}</span><span *ngIf="a.state">, {{ a.state }}</span><span *ngIf="a.pincode"> - {{ a.pincode }}</span><span *ngIf="a.mobile"> &middot; Mob: {{ a.mobile }}</span></div>
+          </div>
+          <div class="view-sec" *ngIf="gatePassView">Latest Gate Pass</div>
+          <div class="view-grid" *ngIf="gatePassView">
+            <div class="view-item"><div class="vi-label">Pass No</div><div class="vi-value">{{ gatePassView.passNo || '\u2014' }}</div></div>
+            <div class="view-item"><div class="vi-label">Issue Date</div><div class="vi-value">{{ fmtAny(gatePassView.issueDate) }}</div></div>
+            <div class="view-item"><div class="vi-label">Expiry Date</div><div class="vi-value">{{ fmtAny(gatePassView.expiryDate) }}</div></div>
+            <div class="view-item"><div class="vi-label">Status</div><div class="vi-value">{{ gatePassView.passStatus || gatePassView.status || '\u2014' }}</div></div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" (click)="closeView()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

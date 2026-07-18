@@ -1,0 +1,77 @@
+.reg-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+
+.reg-col { min-width: 0; }
+
+// ── Photo zone ──
+.photo-zone {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.photo-frame {
+  width: 132px;
+  height: 158px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  background:
+    linear-gradient(180deg, var(--primary-light), #fff);
+  border: 2px dashed var(--border-strong);
+  transition: var(--transition);
+
+  &:hover { border-color: var(--primary-mid); color: var(--primary-color); }
+}
+
+.photo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  flex: 1;
+  min-width: 190px;
+
+  .btn { justify-content: flex-start; }
+}
+
+.photo-hint { font-size: 11px; color: var(--text-muted); }
+
+// ── "Same as present" copy button ──
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  border: 1.5px solid var(--border-strong);
+  background: #fff;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+
+  &:hover {
+    border-color: var(--gold-dark);
+    background: var(--gold-soft);
+    color: var(--gold-dark);
+  }
+}
+
+// ── Responsive ──
+@media (max-width: 1120px) {
+  .reg-grid { grid-template-columns: 1fr; }
+}

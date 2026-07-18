@@ -1,0 +1,149 @@
+<div class="fade-up">
+  <div class="page-head">
+    <div class="ph-titles">
+      <span class="ph-eyebrow">Reports</span>
+      <h2 class="ph-title">Employee Group Pass Expiry</h2>
+      <p class="ph-desc">Set the filters and generate the report, then print or export it</p>
+    </div>
+    <div class="ph-actions">
+      <button class="btn btn-outline" (click)="doPrint()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print
+      </button>
+      <button class="btn btn-gold" (click)="doExport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card rv-filters">
+    <div class="rvf-grid">
+      <div class="field">
+        <label>Contractor</label>
+        <div class="select-wrap"><select class="select" [(ngModel)]="selContractor"><option *ngFor="let c of contractors" [value]="c">{{ c }}</option></select></div>
+      </div>
+      <div class="field">
+        <label>Location</label>
+        <div class="select-wrap"><select class="select" [(ngModel)]="selLocation"><option *ngFor="let l of locations" [value]="l">{{ l }}</option></select></div>
+      </div>
+      <div class="field">
+        <label>From Date</label>
+        <input class="input" type="date" [(ngModel)]="fromDate" />
+      </div>
+      <div class="field">
+        <label>To Date</label>
+        <input class="input" type="date" [(ngModel)]="toDate" />
+      </div>
+      <div class="field rvf-btn">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" (click)="generate()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Generate Report
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="rv-summary">
+    <div class="rvs-chip"><span class="rvs-num">{{ filtered.length }}</span><span class="rvs-lbl">Records</span></div>
+    <div class="rvs-chip"><span class="rvs-num">{{ selContractor === 'All Contractors' ? 5 : 1 }}</span><span class="rvs-lbl">Contractors</span></div>
+    <span class="rvs-meta" *ngIf="generatedAt">Generated on {{ generatedAt | date:'dd MMM y, hh:mm a' }} &middot; {{ selContractor }} &middot; {{ selLocation }}</span>
+    <span class="rvs-meta" *ngIf="!generatedAt">Showing all records &middot; use filters and click Generate</span>
+  </div>
+
+  <!-- Report table -->
+  <div class="card">
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th *ngFor="let c of columns">{{ c.label }}</th>
+            <th style="width:56px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of paged; let i = index">
+            <td class="cell-sub">{{ (page - 1) * pageSize + i + 1 }}</td>
+            <td *ngFor="let c of columns; let ci = index">
+              <ng-container *ngIf="isPillCol(c.key); else normalCell">
+                <span class="pill" [ngClass]="pill(r[c.key])">{{ r[c.key] }}</span>
+              </ng-container>
+              <ng-template #normalCell>
+                <span [class.cell-main]="ci === 0">{{ r[c.key] }}</span>
+              </ng-template>
+            </td>
+            <td>
+              <button class="row-btn" title="View full details" (click)="openView(r)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="paged.length === 0">
+            <td [attr.colspan]="columns.length + 2" style="text-align:center; padding: 28px; color: var(--text-muted);">No records for the selected filters.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-foot">
+      <span>Showing {{ paged.length }} of {{ filtered.length }} records</span>
+      <div class="pager">
+        <button class="pg-btn" (click)="setPage(page - 1)" [disabled]="page <= 1">Prev</button>
+        <button class="pg-btn" *ngFor="let pg of pages" [class.on]="pg === page" (click)="setPage(pg)">{{ pg }}</button>
+        <button class="pg-btn" (click)="setPage(page + 1)" [disabled]="page >= totalPages">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ROW DETAILS POPUP ── -->
+  <div class="modal-overlay" *ngIf="viewRow" (click)="closeView()">
+    <div class="modal-card modal-wide" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <div class="mh-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div>
+          <div class="mh-title">Full Details</div>
+          <div class="mh-sub">{{ title }}</div>
+        </div>
+        <button class="mh-close" (click)="closeView()">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <div class="view-grid">
+          <div class="view-item" *ngFor="let p of viewPairs">
+            <div class="vi-label">{{ p[0] }}</div>
+            <div class="vi-value">{{ p[1] }}</div>
+          </div>
+        </div>
+        <div *ngIf="viewLoading" class="view-loading">Loading complete employee record&hellip;</div>
+        <ng-container *ngIf="viewEmp">
+          <div class="view-sec" *ngIf="empPairs.length">Employee Record</div>
+          <div class="view-grid">
+            <div class="view-item" *ngFor="let p of empPairs">
+              <div class="vi-label">{{ p[0] }}</div>
+              <div class="vi-value">{{ p[1] }}</div>
+            </div>
+          </div>
+          <div class="view-sec" *ngIf="addrList.length">Addresses</div>
+          <div class="view-item view-item-full" *ngFor="let a of addrList">
+            <div class="vi-label">{{ a.addressType }}</div>
+            <div class="vi-value">{{ a.addressLine || '\u2014' }}<span *ngIf="a.district">, {{ a.district }}</span><span *ngIf="a.state">, {{ a.state }}</span><span *ngIf="a.pincode"> - {{ a.pincode }}</span><span *ngIf="a.mobile"> &middot; Mob: {{ a.mobile }}</span></div>
+          </div>
+          <div class="view-sec" *ngIf="gatePassView">Latest Gate Pass</div>
+          <div class="view-grid" *ngIf="gatePassView">
+            <div class="view-item"><div class="vi-label">Pass No</div><div class="vi-value">{{ gatePassView.passNo || '\u2014' }}</div></div>
+            <div class="view-item"><div class="vi-label">Issue Date</div><div class="vi-value">{{ fmtAny(gatePassView.issueDate) }}</div></div>
+            <div class="view-item"><div class="vi-label">Expiry Date</div><div class="vi-value">{{ fmtAny(gatePassView.expiryDate) }}</div></div>
+            <div class="view-item"><div class="vi-label">Status</div><div class="vi-value">{{ gatePassView.passStatus || gatePassView.status || '\u2014' }}</div></div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" (click)="closeView()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

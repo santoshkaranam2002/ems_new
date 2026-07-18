@@ -1,0 +1,466 @@
+<div class="reg fade-up">
+
+  <!-- Page header -->
+  <div class="page-head">
+    <div class="ph-titles">
+      <span class="ph-eyebrow">Employees &middot; Registration</span>
+      <h2 class="ph-title">Employee Registration</h2>
+      <p class="ph-desc">Register a new contract employee and issue a gate pass</p>
+    </div>
+    <div class="ph-actions">
+      <span class="pill pill-gold">{{ statusText }}</span>
+      <button class="btn btn-outline" (click)="displayExisting()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Display Existing
+      </button>
+    </div>
+  </div>
+
+  <div class="reg-grid">
+
+    <!-- LEFT COLUMN -->
+    <div class="reg-col">
+
+      <!-- ══ PERSONAL INFORMATION ══ -->
+      <section class="form-section">
+        <div class="form-section__head">
+          <div class="fs-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <div class="fs-title">Personal Information</div>
+            <div class="fs-sub">Identity, pass validity &amp; category</div>
+          </div>
+        </div>
+        <div class="form-section__body">
+          <div class="form-grid">
+            <div class="field span-2">
+              <label>Location <span class="req">*</span></label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.location" name="location"><option value="" selected>Select location</option><option *ngFor="let o of locations">{{ o }}</option></select></div>
+            </div>
+            <div class="field span-2">
+              <label>Company <span class="req">*</span></label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.company" name="company"><option value="" selected>Select company</option><option *ngFor="let o of companies">{{ o }}</option></select></div>
+            </div>
+            <div class="field span-2">
+              <label>Consignee</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.consignee" name="consignee"><option value="" selected>Select consignee</option><option *ngFor="let o of consignees">{{ o }}</option></select></div>
+            </div>
+            <div class="field span-2">
+              <label>Contractor <span class="req">*</span></label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.contractor" name="contractor"><option value="" selected>Select contractor</option><option *ngFor="let o of contractors">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Labour Code</label>
+              <input class="input" [(ngModel)]="m.labourCode" name="labourCode" type="text" placeholder="e.g. LC-00841" />
+            </div>
+            <div class="field">
+              <label>Employee Name <span class="req">*</span></label>
+              <div class="input-group">
+                <div class="select-wrap"><select class="select" [(ngModel)]="m.title" name="title"><option *ngFor="let o of titles">{{ o }}</option></select></div>
+                <input class="input" [(ngModel)]="m.employeeName" name="employeeName" type="text" placeholder="Full name" />
+              </div>
+            </div>
+            <div class="field span-2">
+              <label>Father's / Spouse Name</label>
+              <input class="input" [(ngModel)]="m.fatherSpouseName" name="fatherSpouseName" type="text" placeholder="Father's or spouse name" />
+            </div>
+            <div class="field">
+              <label>Age in Years</label>
+              <input class="input" [(ngModel)]="m.age" name="age" type="number" placeholder="e.g. 32" />
+            </div>
+            <div class="field">
+              <label>Birth Date</label>
+              <input class="input" [(ngModel)]="m.birthDate" name="birthDate" type="date" />
+            </div>
+            <div class="field">
+              <label>Sex</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.sex" name="sex"><option value="" selected>Select</option><option *ngFor="let o of sexes">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Married</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.married" name="married"><option value="" selected>Select</option><option *ngFor="let o of yesNo">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>ID Mark 1</label>
+              <input class="input" [(ngModel)]="m.idMark1" name="idMark1" type="text" placeholder="Identification mark" />
+            </div>
+            <div class="field">
+              <label>ID Mark 2</label>
+              <input class="input" [(ngModel)]="m.idMark2" name="idMark2" type="text" placeholder="Identification mark" />
+            </div>
+            <div class="field">
+              <label>Religion</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.religion" name="religion"><option value="" selected>Select</option><option *ngFor="let o of religions">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Resident Of</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.residentOf" name="residentOf"><option value="" selected>Select</option><option>Local</option><option>Non-Local</option></select></div>
+            </div>
+            <div class="field">
+              <label>Distance above 50 KM</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.above50" name="above50"><option value="" selected>Select</option><option *ngFor="let o of yesNo">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Reside in Labour Colony</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.labourColony" name="labourColony"><option value="" selected>Select</option><option *ngFor="let o of yesNo">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Pass Issue Date <span class="req">*</span></label>
+              <input class="input" [(ngModel)]="m.passIssueDate" name="passIssueDate" type="date" />
+            </div>
+            <div class="field">
+              <label>Validity in Months</label>
+              <input class="input" [(ngModel)]="m.validityMonths" name="validityMonths" type="number" placeholder="e.g. 12" />
+            </div>
+            <div class="field">
+              <label>Expiry Date</label>
+              <input class="input" [(ngModel)]="m.expiryDate" name="expiryDate" type="date" />
+            </div>
+            <div class="field">
+              <label>Identity Proof</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.idProofType" name="idProofType"><option value="" selected>Select proof</option><option *ngFor="let o of idProofs">{{ o }}</option></select></div>
+            </div>
+            <div class="field span-2">
+              <label>Emp Category</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.empCategory" name="empCategory"><option value="" selected>Select category</option><option *ngFor="let o of categories">{{ o }}</option></select></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PROFESSIONAL INFORMATION ══ -->
+      <section class="form-section">
+        <div class="form-section__head">
+          <div class="fs-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          </div>
+          <div>
+            <div class="fs-title">Professional Information</div>
+            <div class="fs-sub">Work area, salary &amp; safety training</div>
+          </div>
+        </div>
+        <div class="form-section__body">
+          <div class="form-grid">
+            <div class="field">
+              <label>Work Area <span class="req">*</span></label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.workArea" name="workArea"><option value="" selected>Select area</option><option *ngFor="let o of workAreas">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Category</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.skillCategory" name="skillCategory"><option value="" selected>Select</option><option *ngFor="let o of categories">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Designation</label>
+              <input class="input" [(ngModel)]="m.designation" name="designation" type="text" placeholder="e.g. Fitter" />
+            </div>
+            <div class="field">
+              <label>Work Experience</label>
+              <input class="input" [(ngModel)]="m.workExperience" name="workExperience" type="text" placeholder="e.g. 5 years" />
+            </div>
+            <div class="field">
+              <label>Salary Basis</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.salaryBasis" name="salaryBasis"><option value="" selected>Select</option><option *ngFor="let o of salaryBases">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Monthly Salary</label>
+              <input class="input" [(ngModel)]="m.monthlySalary" name="monthlySalary" type="number" placeholder="₹" />
+            </div>
+            <div class="field">
+              <label>Other Allowances</label>
+              <input class="input" [(ngModel)]="m.otherAllowances" name="otherAllowances" type="number" placeholder="₹" />
+            </div>
+            <div class="field">
+              <label>Height Permit</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.heightPermit" name="heightPermit"><option value="" selected>Select</option><option *ngFor="let o of heightPermits">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Contact Person</label>
+              <input class="input" [(ngModel)]="m.contactPerson" name="contactPerson" type="text" placeholder="Name" />
+            </div>
+            <div class="field">
+              <label>Contact Person Phone</label>
+              <input class="input" [(ngModel)]="m.contactPersonPhone" name="contactPersonPhone" type="tel" placeholder="Mobile number" />
+            </div>
+            <div class="field">
+              <label>Safety Training</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.safetyTraining" name="safetyTraining"><option value="" selected>Select</option><option *ngFor="let o of safetyTrainings">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Training Date</label>
+              <input class="input" [(ngModel)]="m.trainingDate" name="trainingDate" type="date" />
+            </div>
+            <div class="field">
+              <label>Training ID</label>
+              <input class="input" [(ngModel)]="m.trainingId" name="trainingId" type="text" placeholder="e.g. ST-2026-104" />
+            </div>
+            <div class="field span-full">
+              <label>Nature of Work</label>
+              <input class="input" [(ngModel)]="m.natureOfWork" name="natureOfWork" type="text" placeholder="Describe the nature of work" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="reg-col">
+
+      <!-- ══ PHOTO INFORMATION ══ -->
+      <section class="form-section">
+        <div class="form-section__head">
+          <div class="fs-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <div>
+            <div class="fs-title">Photo Information</div>
+            <div class="fs-sub">Employee photograph for gate pass</div>
+          </div>
+        </div>
+        <div class="form-section__body">
+          <div class="photo-zone">
+            <div class="photo-frame">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="38" height="38">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span>No photo</span>
+            </div>
+            <div class="photo-actions">
+              <button class="btn btn-primary" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload Photo
+              </button>
+              <button class="btn btn-outline" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Capture from Camera
+              </button>
+              <p class="photo-hint">JPG or PNG, passport size, max 2 MB</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PRESENT ADDRESS ══ -->
+      <section class="form-section">
+        <div class="form-section__head">
+          <div class="fs-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <div class="fs-title">Present Address</div>
+            <div class="fs-sub">Current residential address</div>
+          </div>
+        </div>
+        <div class="form-section__body">
+          <div class="form-grid">
+            <div class="field span-full">
+              <label>Address</label>
+              <input class="input" [(ngModel)]="m.pAddress" name="pAddress" type="text" placeholder="House no, street, area" />
+            </div>
+            <div class="field">
+              <label>Village</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.pVillage" name="pVillage"><option value="" selected>Select village</option><option *ngFor="let o of villageNames">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>District</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.pDistrict" name="pDistrict"><option value="" selected>Select district</option><option *ngFor="let o of districts">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>State</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.pState" name="pState"><option value="" selected>Select state</option><option *ngFor="let o of states">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Pincode</label>
+              <input class="input" [(ngModel)]="m.pPincode" name="pPincode" type="text" placeholder="6-digit PIN" />
+            </div>
+            <div class="field">
+              <label>Mobile</label>
+              <input class="input" [(ngModel)]="m.pMobile" name="pMobile" type="tel" placeholder="Mobile number" />
+            </div>
+            <div class="field">
+              <label>Phone</label>
+              <input class="input" [(ngModel)]="m.pPhone" name="pPhone" type="tel" placeholder="Landline (optional)" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ PERMANENT ADDRESS ══ -->
+      <section class="form-section">
+        <div class="form-section__head">
+          <div class="fs-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div>
+            <div class="fs-title">Permanent Address</div>
+            <div class="fs-sub">As per identity proof</div>
+          </div>
+          <div class="fs-right">
+            <button class="copy-btn" type="button" (click)="copyPresentToPermanent()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Same as present
+            </button>
+          </div>
+        </div>
+        <div class="form-section__body">
+          <div class="form-grid">
+            <div class="field span-full">
+              <label>Address</label>
+              <input class="input" [(ngModel)]="m.qAddress" name="qAddress" type="text" placeholder="House no, street, area" />
+            </div>
+            <div class="field">
+              <label>Village</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.qVillage" name="qVillage"><option value="" selected>Select village</option><option *ngFor="let o of villageNames">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>District</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.qDistrict" name="qDistrict"><option value="" selected>Select district</option><option *ngFor="let o of districts">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>State</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.qState" name="qState"><option value="" selected>Select state</option><option *ngFor="let o of states">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Pincode</label>
+              <input class="input" [(ngModel)]="m.qPincode" name="qPincode" type="text" placeholder="6-digit PIN" />
+            </div>
+            <div class="field">
+              <label>Mobile</label>
+              <input class="input" [(ngModel)]="m.qMobile" name="qMobile" type="tel" placeholder="Mobile number" />
+            </div>
+            <div class="field">
+              <label>Phone</label>
+              <input class="input" [(ngModel)]="m.qPhone" name="qPhone" type="tel" placeholder="Landline (optional)" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ EMPLOYEE PHOTO ══ -->
+      <section class="form-section">
+        <div class="form-section__head">
+          <div class="fs-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <div>
+            <div class="fs-title">Employee Photo</div>
+            <div class="fs-sub">Upload a photo or capture with camera</div>
+          </div>
+        </div>
+        <div class="form-section__body">
+          <div class="photo-box">
+            <div class="photo-preview">
+              <img *ngIf="photoPreview" [src]="photoPreview" alt="Employee photo" />
+              <svg *ngIf="!photoPreview" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="34" height="34"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="photo-actions">
+              <input type="file" accept="image/*" #photoFile style="display:none" (change)="onPhotoSelected($event)" />
+              <button type="button" class="btn btn-outline" (click)="photoFile.click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload Photo
+              </button>
+              <button type="button" class="btn btn-outline" (click)="openCamera()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Open Camera
+              </button>
+              <button type="button" class="btn btn-ghost" *ngIf="photoPreview" (click)="removePhoto()">Remove</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ OTHER INFORMATION ══ -->
+      <section class="form-section">
+        <div class="form-section__head">
+          <div class="fs-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </div>
+          <div>
+            <div class="fs-title">Other Information</div>
+            <div class="fs-sub">Medical &amp; statutory identifiers</div>
+          </div>
+        </div>
+        <div class="form-section__body">
+          <div class="form-grid">
+            <div class="field">
+              <label>Blood Group</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.bloodGroup" name="bloodGroup"><option value="" selected>Select</option><option *ngFor="let o of bloodGroups">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>BOC</label>
+              <div class="select-wrap"><select class="select" [(ngModel)]="m.boc" name="boc"><option value="" selected>Select</option><option *ngFor="let o of yesNo">{{ o }}</option></select></div>
+            </div>
+            <div class="field">
+              <label>Height in CM</label>
+              <input class="input" [(ngModel)]="m.heightCM" name="heightCM" type="number" placeholder="e.g. 172" />
+            </div>
+            <div class="field">
+              <label>Weight in KG</label>
+              <input class="input" [(ngModel)]="m.weightKG" name="weightKG" type="number" placeholder="e.g. 68" />
+            </div>
+            <div class="field">
+              <label>PF No.</label>
+              <input class="input" [(ngModel)]="m.pfNo" name="pfNo" type="text" placeholder="PF account number" />
+            </div>
+            <div class="field">
+              <label>ESIC No.</label>
+              <input class="input" [(ngModel)]="m.esicNo" name="esicNo" type="text" placeholder="ESIC number" />
+            </div>
+            <div class="field">
+              <label>Soc. Reg. No.</label>
+              <input class="input" [(ngModel)]="m.socRegNo" name="socRegNo" type="text" placeholder="Society registration no." />
+            </div>
+            <div class="field">
+              <label>PAN No.</label>
+              <input class="input" [(ngModel)]="m.panNo" name="panNo" type="text" placeholder="ABCDE1234F" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ══ ACTION BAR ══ -->
+  <div class="form-actions">
+    <span class="fa-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      Fields marked <span class="req" style="margin:0 2px">*</span> are mandatory
+    </span>
+    <button class="btn btn-ghost" type="button" (click)="exit()">Exit</button>
+    <button class="btn btn-outline" type="button" (click)="displayExisting()">Display</button>
+    <button class="btn btn-danger-soft" type="button" (click)="resetForm()">Cancel</button>
+    <button class="btn btn-primary" type="button" (click)="save()" [disabled]="isSaving">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      {{ isSaving ? 'Saving...' : 'Save Registration' }}
+    </button>
+  </div>
+
+
+  <!-- ── CAMERA POPUP ── -->
+  <div class="modal-overlay" *ngIf="showCamera" (click)="closeCamera()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <div class="mh-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div>
+          <div class="mh-title">Capture Photo</div>
+          <div class="mh-sub">Position the employee in frame and click Capture</div>
+        </div>
+        <button class="mh-close" (click)="closeCamera()">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <video #cameraVideo class="camera-video" autoplay playsinline></video>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" (click)="closeCamera()">Cancel</button>
+        <button class="btn btn-primary" (click)="capturePhoto()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          Capture
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
