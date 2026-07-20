@@ -220,21 +220,26 @@
         </div>
         <div class="form-section__body">
           <div class="photo-zone">
-            <div class="photo-frame">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="38" height="38">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-              <span>No photo</span>
+            <div class="photo-frame" (click)="photoInfoFile.click()" title="Click to upload photo">
+              <img *ngIf="photoPreview" [src]="photoPreview" alt="Employee photo" class="photo-frame-img" />
+              <ng-container *ngIf="!photoPreview">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="38" height="38">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>No photo</span>
+              </ng-container>
             </div>
             <div class="photo-actions">
-              <button class="btn btn-primary" type="button">
+              <input type="file" accept="image/*" #photoInfoFile style="display:none" (change)="onPhotoSelected($event)" />
+              <button class="btn btn-primary" type="button" (click)="photoInfoFile.click()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                 Upload Photo
               </button>
-              <button class="btn btn-outline" type="button">
+              <button class="btn btn-outline" type="button" (click)="openCamera()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
                 Capture from Camera
               </button>
+              <button class="btn btn-ghost" type="button" *ngIf="photoPreview" (click)="removePhoto()">Remove Photo</button>
               <p class="photo-hint">JPG or PNG, passport size, max 2 MB</p>
             </div>
           </div>

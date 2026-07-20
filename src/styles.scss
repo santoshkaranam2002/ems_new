@@ -500,7 +500,13 @@ button { font-family: inherit; }
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-.fade-up { animation: fadeUp 0.4s ease both; }
+.fade-up { animation: fadeUp 0.4s ease backwards; } // 'backwards' (not 'both'): once the
+// entry animation finishes it stops applying, so the page no longer creates a
+// stacking context that would trap popups UNDER the header/sidebar.
+// Extra safety: the moment a popup opens inside the page, kill the animation
+// entirely so the popup can always rise above the header (z-index 100) and
+// sidebar (z-index 200).
+.fade-up:has(.modal-overlay) { animation: none !important; }
 
 @media (max-width: 640px) {
   .page-head .ph-title { font-size: 18px; }
@@ -712,4 +718,70 @@ button { font-family: inherit; }
   border-color: #dc2626;
   color: #dc2626;
   background: #fef2f2;
+}/* ════════════════════════════════════════════════════════════════
+   MODAL FIX — paste this at the VERY BOTTOM of src/styles.scss
+   Fixes: heading cut at top, whole card scrolling, footer overlap.
+   Works for ALL Add/Edit popups and all View ("eye") popups.
+   ════════════════════════════════════════════════════════════════ */
+
+.modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 28px 20px !important;      /* guaranteed space above & below */
+  overflow-y: auto !important;        /* overlay scrolls, never clips top */
+  overscroll-behavior: contain;
+}
+
+.modal-card {
+  display: flex !important;
+  flex-direction: column !important;  /* head / body / foot stacked */
+  width: 100% !important;
+  max-width: 620px !important;
+  max-height: calc(100vh - 56px) !important;
+  max-height: calc(100dvh - 56px) !important;
+  margin: auto !important;            /* both edges always reachable */
+  overflow: hidden !important;        /* the CARD itself never scrolls */
+  border-radius: 16px !important;
+}
+
+.modal-card.modal-wide { max-width: 760px !important; }
+
+/* Header: always pinned & fully visible */
+.modal-head {
+  flex-shrink: 0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 2 !important;
+}
+
+/* ONLY the middle section scrolls */
+.modal-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+/* Footer (Save / Cancel / Close): always pinned at the bottom */
+.modal-foot {
+  flex-shrink: 0 !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 2 !important;
+  background: #fbfaf9 !important;
+}
+
+/* Compact 2-column form inside Add/Edit popups
+   (pages pass span-2 on every field which made popups super tall) */
+.modal-body .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+.modal-body .form-grid .field.span-2 { grid-column: auto !important; }
+.modal-body .form-grid .span-full,
+.modal-body .form-grid .field.span-full { grid-column: 1 / -1 !important; }
+
+@media (max-width: 560px) {
+  .modal-body .form-grid { grid-template-columns: 1fr !important; }
 }
